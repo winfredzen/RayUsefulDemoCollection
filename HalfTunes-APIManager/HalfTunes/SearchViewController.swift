@@ -39,22 +39,23 @@ class SearchViewController: UIViewController {
   
   var searchResults: [Track] = []
   let apiManager = APIManager()
-  // Create URLSession here, to set self as delegate
-  //创建URLSession，并设置delegate
+  /// 创建下载的session，并设置delegate，这里支持background session
   lazy var downloadsSession: URLSession = {
     let configuration = URLSessionConfiguration.background(withIdentifier: "bgSessionConfiguration")
     return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
   }()
-
-  // MARK: - View controller methods
   
+  // MARK: - View controller methods
   override func viewDidLoad() {
     super.viewDidLoad()
     apiManager.downloadsSession = downloadsSession
     tableView.tableFooterView = UIView()
   }
   
-  // This method attempts to play the local file (if it exists) when the cell is tapped
+  
+  /// 点击cell，播放本地的文件
+  ///
+  /// - Parameter track: 数据模型
   func playDownload(_ track: Track) {
     let playerViewController = AVPlayerViewController()
     present(playerViewController, animated: true, completion: nil)
@@ -67,7 +68,6 @@ class SearchViewController: UIViewController {
 }
 
 // MARK: - TrackCellDelegate
-
 extension SearchViewController: TrackCellDelegate {
   func pauseTapped(_ cell: TrackCell) {
     if let indexPath = tableView.indexPath(for: cell) {

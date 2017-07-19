@@ -24,7 +24,7 @@ import Foundation
 import UIKit
 
 extension SearchViewController: UISearchBarDelegate {
-
+  
   func dismissKeyboard() {
     searchBar.resignFirstResponder()
   }

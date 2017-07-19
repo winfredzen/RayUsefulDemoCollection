@@ -87,10 +87,10 @@ class TrackCell: UITableViewCell {
 
 // MARK: - ProgressUpdateDelegate
 extension TrackCell : ProgressUpdateDelegate {
-
-	func updateDisplay(progress: Float, totalSize : String) {
-		progressView.progress = progress
-		progressLabel.text = String(format: "%.1f%% of %@", progress * 100, totalSize)
-	}
-	
+  
+  func updateDisplay(progress: Float, totalSize : String) {
+    progressView.progress = progress
+    progressLabel.text = String(format: "%.1f%% of %@", progress * 100, totalSize)
+  }
+  
 }
