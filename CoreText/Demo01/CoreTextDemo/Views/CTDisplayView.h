@@ -12,6 +12,9 @@
 extern NSString *const CTDisplayViewImagePressedNotification;
 extern NSString *const CTDisplayViewLinkPressedNotification;
 
+/**
+ CTDisplayView类，持有CoreTextData类的实例，负责将CTFrameRef绘制到界面上
+ */
 @interface CTDisplayView : UIView
 
 @property (strong, nonatomic) CoreTextData * data;

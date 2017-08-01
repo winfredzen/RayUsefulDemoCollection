@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ 图片数据
+ */
 @interface CoreTextImageData : NSObject
 
 @property (strong, nonatomic) NSString * name;

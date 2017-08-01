@@ -26,8 +26,10 @@ static CGFloat widthCallback(void* ref){
     return [(NSNumber*)[(__bridge NSDictionary*)ref objectForKey:@"width"] floatValue];
 }
 
+//config->字典
 + (NSMutableDictionary *)attributesWithConfig:(CTFrameParserConfig *)config {
     CGFloat fontSize = config.fontSize;
+    //字体
     CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"ArialMT", fontSize, NULL);
     CGFloat lineSpacing = config.lineSpace;
     const CFIndex kNumberOfSettings = 3;
@@ -36,7 +38,7 @@ static CGFloat widthCallback(void* ref){
         { kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(CGFloat), &lineSpacing },
         { kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(CGFloat), &lineSpacing }
     };
-    
+    //段落样式
     CTParagraphStyleRef theParagraphRef = CTParagraphStyleCreate(theSettings, kNumberOfSettings);
     
     UIColor * textColor = config.textColor;
@@ -52,20 +54,28 @@ static CGFloat widthCallback(void* ref){
 }
 
 + (CoreTextData *)parseTemplateFile:(NSString *)path config:(CTFrameParserConfig*)config {
+    //图片
     NSMutableArray *imageArray = [NSMutableArray array];
+    //链接
     NSMutableArray *linkArray = [NSMutableArray array];
-    NSAttributedString *content = [self loadTemplateFile:path config:config
-                                              imageArray:imageArray linkArray:linkArray];
+    NSAttributedString *content = [self loadTemplateFile:path config:config imageArray:imageArray linkArray:linkArray];
     CoreTextData *data = [self parseAttributedContent:content config:config];
     data.imageArray = imageArray;
     data.linkArray = linkArray;
     return data;
 }
 
-+ (NSAttributedString *)loadTemplateFile:(NSString *)path
-                                  config:(CTFrameParserConfig*)config
-                              imageArray:(NSMutableArray *)imageArray
-                               linkArray:(NSMutableArray *)linkArray {
+/**
+ 从路径加载NSAttributedString
+
+ @param path 路径
+ @param config 配置
+ @param imageArray 图片集合
+ @param linkArray 链接集合
+ @return 属性字符串
+ */
++ (NSAttributedString *)loadTemplateFile:(NSString *)path config:(CTFrameParserConfig*)config imageArray:(NSMutableArray *)imageArray linkArray:(NSMutableArray *)linkArray {
+    //加载json文件
     NSData *data = [NSData dataWithContentsOfFile:path];
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
     if (data) {
@@ -75,9 +85,9 @@ static CGFloat widthCallback(void* ref){
         if ([array isKindOfClass:[NSArray class]]) {
             for (NSDictionary *dict in array) {
                 NSString *type = dict[@"type"];
-                if ([type isEqualToString:@"txt"]) {
-                    NSAttributedString *as = [self parseAttributedContentFromNSDictionary:dict
-                                                                                   config:config];
+                if ([type isEqualToString:@"txt"]) {//类型为txt
+                    NSAttributedString *as = [self parseAttributedContentFromNSDictionary:dict config:config];
+                    //拼接NSAttributedString
                     [result appendAttributedString:as];
                 } else if ([type isEqualToString:@"img"]) {
                     // 创建 CoreTextImageData
@@ -88,10 +98,9 @@ static CGFloat widthCallback(void* ref){
                     // 创建空白占位符，并且设置它的CTRunDelegate信息
                     NSAttributedString *as = [self parseImageDataFromNSDictionary:dict config:config];
                     [result appendAttributedString:as];
-                } else if ([type isEqualToString:@"link"]) {
+                } else if ([type isEqualToString:@"link"]) {//链接
                     NSUInteger startPos = result.length;
-                    NSAttributedString *as = [self parseAttributedContentFromNSDictionary:dict
-                                                                                   config:config];
+                    NSAttributedString *as = [self parseAttributedContentFromNSDictionary:dict config:config];
                     [result appendAttributedString:as];
                     // 创建 CoreTextLinkData
                     NSUInteger length = result.length - startPos;
@@ -108,9 +117,9 @@ static CGFloat widthCallback(void* ref){
     return result;
 }
 
-+ (NSAttributedString *)parseImageDataFromNSDictionary:(NSDictionary *)dict
-                                                config:(CTFrameParserConfig*)config {
++ (NSAttributedString *)parseImageDataFromNSDictionary:(NSDictionary *)dict config:(CTFrameParserConfig*)config {
     CTRunDelegateCallbacks callbacks;
+    //memset() 函数用来将指定内存的前n个字节设置为特定的值
     memset(&callbacks, 0, sizeof(CTRunDelegateCallbacks));
     callbacks.version = kCTRunDelegateVersion1;
     callbacks.getAscent = ascentCallback;
@@ -122,16 +131,14 @@ static CGFloat widthCallback(void* ref){
     unichar objectReplacementChar = 0xFFFC;
     NSString * content = [NSString stringWithCharacters:&objectReplacementChar length:1];
     NSDictionary * attributes = [self attributesWithConfig:config];
-    NSMutableAttributedString * space = [[NSMutableAttributedString alloc] initWithString:content
-                                                                               attributes:attributes];
-    CFAttributedStringSetAttribute((CFMutableAttributedStringRef)space, CFRangeMake(0, 1),
-                                   kCTRunDelegateAttributeName, delegate);
+    NSMutableAttributedString * space = [[NSMutableAttributedString alloc] initWithString:content attributes:attributes];
+    CFAttributedStringSetAttribute((CFMutableAttributedStringRef)space, CFRangeMake(0, 1), kCTRunDelegateAttributeName,delegate);
     CFRelease(delegate);
     return space;
 }
 
-+ (NSAttributedString *)parseAttributedContentFromNSDictionary:(NSDictionary *)dict
-                                                        config:(CTFrameParserConfig*)config {
+//创建NSAttributedString
++ (NSAttributedString *)parseAttributedContentFromNSDictionary:(NSDictionary *)dict config:(CTFrameParserConfig*)config {
     NSMutableDictionary *attributes = [self attributesWithConfig:config];
     // set color
     UIColor *color = [self colorFromTemplate:dict[@"color"]];

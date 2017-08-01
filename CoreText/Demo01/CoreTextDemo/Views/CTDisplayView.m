@@ -198,6 +198,7 @@ typedef enum CTDisplayViewState : NSInteger {
         return;
     }
 
+    //翻转坐标系
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextTranslateCTM(context, 0, self.bounds.size.height);

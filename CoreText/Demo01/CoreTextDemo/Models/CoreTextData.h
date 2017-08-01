@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "CoreTextImageData.h"
 
+/**
+ CoreTextData类，用于保存由CTFrameParser类生成的CTFrameRef实例以及CTFrameRef实际绘制需要的高度
+ */
 @interface CoreTextData : NSObject
 
 @property (assign, nonatomic) CTFrameRef ctFrame;

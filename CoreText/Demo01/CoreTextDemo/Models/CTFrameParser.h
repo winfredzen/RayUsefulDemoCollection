@@ -10,6 +10,9 @@
 #import "CoreTextData.h"
 #import "CTFrameParserConfig.h"
 
+/**
+ CTFrameParser类，用于生成最后绘制界面需要的CTFrameRef实例
+ */
 @interface CTFrameParser : NSObject
 
 + (NSMutableDictionary *)attributesWithConfig:(CTFrameParserConfig *)config;

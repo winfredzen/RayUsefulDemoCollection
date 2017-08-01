@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ CTFrameParserConfig类，用于配置绘制的参数，例如：文字颜色，大小，行间距等
+ */
 @interface CTFrameParserConfig : NSObject
 
 @property (nonatomic, assign) CGFloat width;

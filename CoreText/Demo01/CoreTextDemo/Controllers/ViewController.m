@@ -30,9 +30,11 @@
 }
 
 - (void)setupUserInterface {
+    //配置
     CTFrameParserConfig *config = [[CTFrameParserConfig alloc] init];
     config.width = self.ctView.width;
     NSString *path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"json"];
+    //CoreTextData
     CoreTextData *data = [CTFrameParser parseTemplateFile:path config:config];
     self.ctView.data = data;
     self.ctView.height = data.height;
